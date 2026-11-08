@@ -1,9 +1,10 @@
-// Firebase 콘솔 → 프로젝트 설정 → 내 앱 → 웹 앱의 firebaseConfig를 여기에 넣으세요.
-// 웹 앱 설정값만 넣습니다. 서비스 계정 JSON이나 개인 키는 넣지 않습니다.
+// set-classroom Firebase 웹 앱 연결 설정
 window.FIREBASE_CONFIG = {
-  apiKey: "",
-  authDomain: "",
-  databaseURL: "",
-  projectId: "",
-  appId: ""
+  apiKey: "AIzaSyBHtMgfiNvJGdQSvxKKjcm_4vPk6sPKZZ0",
+  authDomain: "set-classroom.firebaseapp.com",
+  databaseURL: "https://set-classroom-default-rtdb.firebaseio.com/",
+  projectId: "set-classroom",
+  storageBucket: "set-classroom.firebasestorage.app",
+  messagingSenderId: "25572603254",
+  appId: "1:25572603254:web:ec527c56eb2c19a0cf3657"
 };
