@@ -1,0 +1,48 @@
+{
+  "rules": {
+    ".read": false,
+    ".write": false,
+    "rooms": {
+      "$room": {
+        ".read": "auth != null",
+        ".write": "auth != null && ((!data.exists() && newData.child('owner').val() === auth.uid) || data.child('owner').val() === auth.uid)",
+        ".validate": "$room.matches(/^[0-9]{6}$/) && newData.hasChildren(['owner','version','level','count','rounds','createdAt']) && newData.child('version').val() === 3 && (!data.exists() || newData.child('owner').val() === data.child('owner').val())",
+        "members": {
+          "$uid": {
+            ".write": "auth != null && auth.uid === $uid && root.child('rooms').child($room).child('version').val() === 3 && newData.exists()",
+            ".validate": "newData.hasChildren(['name','joinedAt'])",
+            "name": {
+              ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length <= 12"
+            },
+            "joinedAt": {
+              ".validate": "newData.isNumber() && ((!data.exists() && newData.val() === now) || (data.exists() && newData.val() === data.val()))"
+            },
+            "$other": {
+              ".validate": false
+            }
+          }
+        },
+        "rounds": {
+          "$round": {
+            "winner": {
+              ".write": "auth != null && root.child('rooms').child($room).child('members').child(auth.uid).exists() && !data.exists() && newData.exists() && data.parent().child('board').exists() && ($round === '0' || root.child('rooms').child($room).child('rounds').child(data.parent().child('previous').val()).child('winner').exists())",
+              ".validate": "newData.hasChildren(['uid','key','at']) && newData.child('uid').val() === auth.uid && data.parent().child('solutions').child(newData.child('key').val()).val() === true",
+              "uid": {
+                ".validate": "newData.isString()"
+              },
+              "key": {
+                ".validate": "newData.isString() && newData.val().matches(/^[0-9]+-[0-9]+-[0-9]+$/)"
+              },
+              "at": {
+                ".validate": "newData.isNumber() && newData.val() === now"
+              },
+              "$other": {
+                ".validate": false
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

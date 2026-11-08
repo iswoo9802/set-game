@@ -1,0 +1,7 @@
+export function attrs(id){return [Math.floor(id/27),Math.floor(id/9)%3,Math.floor(id/3)%3,id%3]}
+export function validSet(ids){return ids.length===3&&new Set(ids).size===3&&ids.every(x=>Number.isInteger(x)&&x>=0&&x<81)&&attrs(ids[0]).every((v,k)=>(v+attrs(ids[1])[k]+attrs(ids[2])[k])%3===0)}
+export function findSet(b=[]){for(let i=0;i<b.length-2;i++)for(let j=i+1;j<b.length-1;j++)for(let k=j+1;k<b.length;k++)if(validSet([b[i],b[j],b[k]]))return[b[i],b[j],b[k]];return null}
+export const keyOf=ids=>[...ids].sort((a,b)=>a-b).join('-');
+export function makeRounds(level='full',count=20){let rounds={};for(let r=0;r<count;r++){let d=Array.from({length:81},(_,i)=>i).filter(i=>level!=='easy'||i%3===0);for(let i=d.length-1;i>0;i--){let j=Math.floor(Math.random()*(i+1));[d[i],d[j]]=[d[j],d[i]]}let board=d.slice(0,12);while(!findSet(board))board.push(...d.slice(board.length,board.length+3));let solutions={};for(let i=0;i<board.length;i++)for(let j=i+1;j<board.length;j++)for(let k=j+1;k<board.length;k++){let ids=[board[i],board[j],board[k]];if(validSet(ids))solutions[keyOf(ids)]=true}rounds[r]={board,solutions,previous:r?String(r-1):'none'};}return rounds}
+export function currentRound(room){for(let r=0;r<room.count;r++)if(!room.rounds?.[r]?.winner)return r;return room.count}
+export function scoresOf(room){let scores={};for(let r of Object.values(room.rounds||{}))if(r.winner)scores[r.winner.uid]=(scores[r.winner.uid]||0)+1;return scores}
